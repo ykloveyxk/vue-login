@@ -1,52 +1,72 @@
-<template>
+<template scope='scope'>
 <div class="hello">
-  <h1>{{ msg }}</h1>
-  <el-button type="primary" @click="logout()">登出</el-button>
-  <h2>Essential Links</h2>
-  <ul>
-    <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-    <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-    <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-    <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    <br>
-    <li><a href="http://vuejs-templates.github.io/webpack/" target="_blank">Docs for This Template</a></li>
-  </ul>
-  <h2>Ecosystem</h2>
-  <ul>
-    <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-    <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-    <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-    <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-  </ul>
+    <h1>{{ msg }}</h1>
+    <h2>网站用户有：</h2>
+    <ul>
+        <li v-for="(item, index) in user">
+            {{ index }} {{ item.email }}
+            <el-button type="" @click="del_user(index)">删除</el-button>
+        </li>
+        <br>
+    </ul>
+    <el-button type="primary" @click="logout()">登出</el-button>
 </div>
 </template>
 
 <script>
 import * as types from '../store/types'
 export default {
-  name: 'hello',
-  data() {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+    name: 'hello',
+    data() {
+        return {
+            msg: 'Welcome to Your Vue.js App',
+            user: ''
+        }
+    },
+    mounted() {
+        this.getUser();
+    },
+    methods: {
+        getUser() {
+            setTimeout(() => {
+                this.$http.get('/api/user').then((response) => {
+                    console.log(response)
+                    this.user = response.data
+                })
+            }, 50)
+        },
+        logout() {
+            this.$store.commit(types.LOGOUT)
+            if (!this.$store.state.token) {
+                this.$router.push('/login')
+                this.$message({
+                    type: 'success',
+                    message: '登出成功'
+                })
+            } else {
+                this.$message({
+                    type: 'info',
+                    message: '登出失败'
+                })
+            }
+        },
+        del_user(id) {
+            let _id = this.user[id]._id;
+            console.log(_id)
+            this.$http.post('/api/del_user', {
+                id: _id
+            }).then(response => {
+                console.log(response)
+                this.$message({
+                    type: 'success',
+                    message: '删除成功'
+                })
+                this.getUser()
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
     }
-  },
-  methods: {
-    logout() {
-      this.$store.commit(types.LOGOUT)
-      if (!this.$store.state.token) {
-        this.$router.push('/login')
-        this.$message({
-          type: 'success',
-          message: '登出成功'
-        })
-      } else {
-        this.$message({
-          type: 'info',
-          message: '登出失败'
-        })
-      }
-    }
-  }
 }
 </script>
 
@@ -54,20 +74,20 @@ export default {
 <style scoped>
 h1,
 h2 {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 ul {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 
 li {
-  display: inline-block;
-  margin: 0 10px;
+    display: inline-block;
+    margin: 0 10px;
 }
 
 a {
-  color: #42b983;
+    color: #42b983;
 }
 </style>

@@ -9,7 +9,9 @@ db.once('open', function () {
 var registerSchema = mongoose.Schema({
 	email: String,
 	password: String,
-	recheck: String
+	recheck: String,
+	token: String,
+	create_time: Date
 })
 
 var loginSchema = mongoose.Schema({
