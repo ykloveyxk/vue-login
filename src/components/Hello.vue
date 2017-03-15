@@ -2,19 +2,25 @@
 <div class="hello">
     <h1>{{ msg }}</h1>
     <h2>网站用户有：</h2>
-    <ul>
-        <li v-for="(item, index) in user">
+
+    <!-- v-for在进行过度时，使用 transition-group 标签，使用后内层标签需要有独有的 key 值 -->
+    <transition-group name="list-complete" tag="ul">
+        <li v-for="(item, index) in user" :key="item._id" class="list-complete-item">
             {{ index+1 }}. {{ item.email }}
             <el-button type="" @click="del_user(index)">删除</el-button>
         </li>
-        <br>
-    </ul>
+    </transition-group>
+    <br>
     <el-button type="primary" @click="logout()">登出</el-button>
 </div>
 </template>
 
 <script>
+/**
+ * @author: weakgoldfish
+ */
 import * as types from '../store/types'
+import api from '../http'
 export default {
     name: 'hello',
     data() {
@@ -24,19 +30,25 @@ export default {
         }
     },
     mounted() {
-        this.getUser();
+        // 直接调用 this.get_User() 会导致第一次登录时产生setTimeout的延迟。
+        api.getUser().then(({
+            data
+        }) => {
+            this.user = data
+        })
     },
     methods: {
-        getUser() {
+        get_User() {
             setTimeout(() => {
-                this.$http.get('/api/user').then((response) => {
-                    // console.log(response)
-                    this.user = response.data
+                api.getUser().then(({
+                    data
+                }) => {
+                    this.user = data
                 })
-            }, 50)
+            }, 100)
         },
         logout() {
-            this.$store.commit(types.LOGOUT)
+            this.$store.dispatch('UserLogout')
             if (!this.$store.state.token) {
                 this.$router.push('/login')
                 this.$message({
@@ -51,16 +63,15 @@ export default {
             }
         },
         del_user(id) {
-            let _id = this.user[id]._id;
-            this.$http.post('/api/delUser', {
-                id: _id
-            }).then(response => {
-                // console.log(response)
+            let opt = {
+                id: this.user[id]._id
+            };
+            api.delUser(opt).then(response => {
                 this.$message({
                     type: 'success',
                     message: '删除成功'
                 })
-                this.getUser()
+                this.get_User()
             }).catch((err) => {
                 console.log(err);
             })
@@ -69,7 +80,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1,
 h2 {
@@ -82,11 +92,27 @@ ul {
 }
 
 li {
-    display: inline-block;
-    margin: 0 10px;
+    /*display: inline-block;*/
+    margin: 10px 0;
 }
 
 a {
     color: #42b983;
+}
+
+.list-complete-item {
+    transition: all 1s;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.list-complete-enter,
+.list-complete-leave-to {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.list-complete-leave-active {
+    position: absolute;
 }
 </style>

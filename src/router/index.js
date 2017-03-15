@@ -14,6 +14,7 @@ const router = new Router({
 					resolve(require('@/components/Hello.vue'));
 				});
 			},
+			// 设置 mata 字段，表示该字段需要验证
 			meta: {
 				requireAuth: true
 			}
@@ -36,6 +37,7 @@ const router = new Router({
 				});
 			}
 		},
+		// 简单设置404页面
 		{
 			path: '*',
 			component(resolve) {
@@ -48,6 +50,7 @@ const router = new Router({
 	]
 })
 
+// 验证 token，存在才跳转
 router.beforeEach((to, from, next) => {
 	if(to.meta.requireAuth) {
 		if(localStorage.token) {

@@ -30,14 +30,11 @@
 ·
 <script>
 import * as types from '../store/types'
+import api from '../http'
 export default {
     name: 'login',
     data() {
-        var validatePass2 = (rule, value, callback) => {
-            value === '' ? callback(new Error('请再次输入密码')) :
-                value !== this.registerValidateForm.password ? callback(new Error('两次输入密码不一致!')) :
-                callback()
-        };
+        // 监测密码长度
         var validatePass1 = (rule, value, callback) => {
             if (value.length < 6) {
                 callback(new Error('密码太短，请输入6位以上密码'))
@@ -45,14 +42,18 @@ export default {
                 callback()
             }
         };
+        // 监测两次密码是否相同
+        var validatePass2 = (rule, value, callback) => {
+            value === '' ? callback(new Error('请再次输入密码')) :
+                value !== this.registerValidateForm.password ? callback(new Error('两次输入密码不一致!')) :
+                callback()
+        };
         return {
             registerValidateForm: {
-                domains: [{
-                    value: ''
-                }],
                 email: '',
                 password: '',
-                checkPass: ''
+                checkPass: '',
+                first: 'first'
             },
             rules: {
                 email: [{
@@ -63,7 +64,7 @@ export default {
                     {
                         type: 'email',
                         message: '请输入正确的邮箱地址',
-                        trigger: 'blur,change'
+                        trigger: 'blur'
                     }
                 ],
                 password: [{
@@ -97,13 +98,16 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let opt = this.registerValidateForm;
-                    this.$http.post('/api/register', opt).then((response) => {
-                        // console.log(response)
-                        if (response.data.success) {
+                    api.userRegister(opt).then(({
+                        data
+                    }) => {
+                        if (data.success) {
                             this.$message({
                                 type: 'success',
-                                message: '注册成功，请登录'
+                                message: `注册成功，请登录`
                             })
+                            // 因为设计时将 Register 设计为了 Login 的组件，所以成功跳转时刷新一次页面
+                            this.$router.go(0)
                             this.$router.push('/login')
                         } else {
                             this.$message({
@@ -111,9 +115,11 @@ export default {
                                 message: '此账户已存在'
                             })
                         }
+                    }).catch((err) => {
+                        console.log(err);
                     })
                 } else {
-                    console.log('error submit!!');
+                    console.log('Error Submit!!');
                     return false;
                 }
             });

@@ -1,7 +1,3 @@
-export const LOGIN = 'login';
+export const LOGIN = 'LOGIN';
 
-export const LOGOUT = 'logout';
-
-export const TITLE = 'title'
-
-export const ACTIVENAME = 'activeName'
+export const LOGOUT = 'LOGOUT';

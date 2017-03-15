@@ -9,19 +9,14 @@
                     <el-form-item
                       prop="email"
                       label="邮箱"
-                      :rules="[
-                        { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-                        { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
-                      ]"
+                      :rules="rules.email"
                     >
                       <el-input v-model="dynamicValidateForm.email"></el-input>
                     </el-form-item>
                     <el-form-item
                     prop="password"
                     label="密码"
-                    :rules = "[
-                      { required: true, message: '请输入密码', trigger: 'blur' }
-                    ]"
+                    :rules = "rules.password"
                     >
                       <el-input type="password" v-model="dynamicValidateForm.password"></el-input>
                     </el-form-item>
@@ -42,27 +37,42 @@
 <script>
 import Register from '@/components/Register.vue'
 import * as types from '../store/types'
+import api from '../http'
 export default {
     name: 'login',
     data() {
         return {
             dynamicValidateForm: {
-                domains: [{
-                    value: ''
-                }],
                 email: '',
                 password: ''
             },
-            activeName: this.$store.state.activeName
+            activeName: this.$store.state.activeName,
+
+            rules: {
+                email: [{
+                        required: true,
+                        message: '请输入邮箱地址',
+                        trigger: 'blur'
+                    },
+                    {
+                        type: 'email',
+                        message: '请输入正确的邮箱地址',
+                        trigger: 'blur'
+                    }
+                ],
+                password: {
+                    required: true,
+                    message: '请输入密码',
+                    trigger: 'blur'
+                }
+            }
         }
     },
     components: {
         Register
     },
     methods: {
-        handleClick(tab, event) {
-            // console.log(tab, event);
-        },
+        handleClick(tab, event) {},
         resetForm(formName) {
             this.$refs[formName].resetFields();
         },
@@ -70,26 +80,26 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let opt = this.dynamicValidateForm;
-                    this.$http.post('/api/login', opt).then((response) => {
-                        // console.log(response)
-                        if (response.data.info == false) {
+                    api.UserLogin(opt).then(({
+                        data
+                    }) => {
+                        if (!data.info) {
                             this.$message({
                                 type: 'info',
                                 message: '账号不存在'
                             })
                         }
-                        if (response.data.success) {
+                        if (data.success) {
                             this.$message({
                                 type: 'success',
                                 message: '登录成功'
                             })
-                            this.$store.commit(types.LOGIN, response.data.token);
+                            this.$store.dispatch('UserLogin', data.token)
                             let redirect = decodeURIComponent(this.$route.query.redirect || '/');
                             this.$router.push({
                                 path: redirect
                             })
-                            // console.log(localStorage.token)
-                        } else if (response.data.success == false) {
+                        } else {
                             this.$message({
                                 type: 'info',
                                 message: '密码错误'
@@ -97,7 +107,7 @@ export default {
                         }
                     })
                 } else {
-                    console.log('error submit!!');
+                    console.log('Error Submit!!');
                     return false;
                 }
             });
