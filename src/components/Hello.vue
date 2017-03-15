@@ -4,7 +4,7 @@
     <h2>网站用户有：</h2>
     <ul>
         <li v-for="(item, index) in user">
-            {{ index }} {{ item.email }}
+            {{ index+1 }}. {{ item.email }}
             <el-button type="" @click="del_user(index)">删除</el-button>
         </li>
         <br>
@@ -19,7 +19,7 @@ export default {
     name: 'hello',
     data() {
         return {
-            msg: 'Welcome to Your Vue.js App',
+            msg: 'Welcome to Vue-login',
             user: ''
         }
     },
@@ -52,7 +52,7 @@ export default {
         },
         del_user(id) {
             let _id = this.user[id]._id;
-            this.$http.post('/api/del_user', {
+            this.$http.post('/api/delUser', {
                 id: _id
             }).then(response => {
                 // console.log(response)

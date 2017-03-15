@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
+// import Hello from '@/components/Hello'
 import store from '../store/index.js'
 
 Vue.use(Router)
@@ -9,7 +9,11 @@ const router = new Router({
 	routes: [{
 			path: '/',
 			name: 'Hello',
-			component: Hello,
+			component(resolve) {
+				require.ensure(['@/components/Hello.vue'], () => {
+					resolve(require('@/components/Hello.vue'));
+				});
+			},
 			meta: {
 				requireAuth: true
 			}
@@ -31,6 +35,15 @@ const router = new Router({
 					resolve(require('@/components/Register.vue'));
 				});
 			}
+		},
+		{
+			path: '*',
+			component(resolve) {
+				require.ensure(['@/components/404.vue'], () => {
+					resolve(require('@/components/404.vue'));
+				});
+			},
+			hidden: true
 		}
 	]
 })

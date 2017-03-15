@@ -1,12 +1,15 @@
-var mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/kk')
+const mongoose = require('mongoose')
+const config = require('config-lite')
+
+// mongodb 连接🔗
+mongoose.connect(config.mongodb)
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connect error'))
 db.once('open', function () {
-	console.log('mongodb is running')
+	console.log('Mongodb started successfully')
 })
 
-var registerSchema = mongoose.Schema({
+var userSchema = mongoose.Schema({
 	email: String,
 	password: String,
 	recheck: String,
@@ -14,14 +17,10 @@ var registerSchema = mongoose.Schema({
 	create_time: Date
 })
 
-var loginSchema = mongoose.Schema({
-	email: String,
-	password: String
-})
-
 var model = {
-	Login: mongoose.model('Login', loginSchema),
-	Register: mongoose.model('Register', registerSchema)
+	// 可以在此处扩展 model，例如：
+	// Article: mongoose.model('Article', articleSchema),
+	User: mongoose.model('Register', userSchema)
 }
 
 module.exports = model

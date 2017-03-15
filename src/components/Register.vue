@@ -38,6 +38,13 @@ export default {
                 value !== this.registerValidateForm.password ? callback(new Error('两次输入密码不一致!')) :
                 callback()
         };
+        var validatePass1 = (rule, value, callback) => {
+            if (value.length < 6) {
+                callback(new Error('密码太短，请输入6位以上密码'))
+            } else {
+                callback()
+            }
+        };
         return {
             registerValidateForm: {
                 domains: [{
@@ -60,10 +67,15 @@ export default {
                     }
                 ],
                 password: [{
-                    required: true,
-                    message: '请输入密码',
-                    trigger: 'blur'
-                }],
+                        required: true,
+                        message: '请输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: validatePass1,
+                        trigger: 'blur'
+                    }
+                ],
                 checkPass: [{
                         required: true,
                         message: '请再次输入密码',

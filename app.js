@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const favicon = require('serve-favicon')
 const logger = require('morgan')
 const routes = require('./server/routes/user.js')
+const config = require('config-lite')
 
 const app = express()
 app.use(logger('dev'));
@@ -21,5 +22,5 @@ app.use(function (req, res, next) {
 })
 
 app.listen(3000, function () {
-	console.log('server running in port 3000')
+	console.log(`Server running in port ${config.port}`)
 })

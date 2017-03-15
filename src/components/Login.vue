@@ -42,7 +42,6 @@
 <script>
 import Register from '@/components/Register.vue'
 import * as types from '../store/types'
-import sha1 from 'sha1'
 export default {
     name: 'login',
     data() {
