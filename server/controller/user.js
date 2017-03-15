@@ -17,12 +17,22 @@ const Register = function (req, res) {
 	})
 	User_register.create_time = moment(objectIdToTimestamp(User_register._id))
 		.format('YYYY-MM-DD HH:mm:ss');
-	User_register.save((err) => {
+	model.Register.findOne({ email: (User_register.email)
+			.toLowerCase() }, function (err, doc) {
 		if(err) console.log(err)
-		console.log('register success')
-		res.json({
-			success: true
-		})
+		if(doc) {
+			res.json({
+				success: false
+			})
+		} else {
+			User_register.save((err) => {
+				if(err) console.log(err)
+				console.log('register success')
+				res.json({
+					success: true
+				})
+			})
+		}
 	})
 }
 
@@ -79,8 +89,10 @@ const Del_user = (req, res) => {
 }
 
 module.exports = (router) => {
-	router.post('/register', Register),
-		router.post('/login', Login),
-		router.get('/user', User),
-		router.post('/del_user', Del_user)
+router.post('/register', Register),
+	router.post('/login', Login),
+	router.get('/user', User),
+	router.post('/del_user', Del_user)
+}
+)
 }

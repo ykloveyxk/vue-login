@@ -31,77 +31,82 @@
 <script>
 import * as types from '../store/types'
 export default {
-  name: 'login',
-  data() {
-    var validatePass2 = (rule, value, callback) => {
-      value === '' ? callback(new Error('请再次输入密码')) :
-        value !== this.registerValidateForm.password ? callback(new Error('两次输入密码不一致!')) :
-        callback()
-    };
-    return {
-      registerValidateForm: {
-        domains: [{
-          value: ''
-        }],
-        email: '',
-        password: '',
-        checkPass: ''
-      },
-      rules: {
-        email: [{
-            required: true,
-            message: '请输入邮箱地址',
-            trigger: 'blur'
-          },
-          {
-            type: 'email',
-            message: '请输入正确的邮箱地址',
-            trigger: 'blur,change'
-          }
-        ],
-        password: [{
-          required: true,
-          message: '请输入密码',
-          trigger: 'blur'
-        }],
-        checkPass: [{
-            required: true,
-            message: '请再次输入密码',
-            trigger: 'blur'
-          },
-          {
-            validator: validatePass2,
-            trigger: 'blur'
-          }
-        ]
-      }
-    }
-  },
-  methods: {
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          let opt = this.registerValidateForm;
-          this.$http.post('/api/register', opt).then((response) => {
-            console.log(response)
-            if (response.data.success) {
-              this.$message({
-                type: 'success',
-                message: '注册成功，请登录'
-              })
-              this.$router.push('/login')
+    name: 'login',
+    data() {
+        var validatePass2 = (rule, value, callback) => {
+            value === '' ? callback(new Error('请再次输入密码')) :
+                value !== this.registerValidateForm.password ? callback(new Error('两次输入密码不一致!')) :
+                callback()
+        };
+        return {
+            registerValidateForm: {
+                domains: [{
+                    value: ''
+                }],
+                email: '',
+                password: '',
+                checkPass: ''
+            },
+            rules: {
+                email: [{
+                        required: true,
+                        message: '请输入邮箱地址',
+                        trigger: 'blur'
+                    },
+                    {
+                        type: 'email',
+                        message: '请输入正确的邮箱地址',
+                        trigger: 'blur,change'
+                    }
+                ],
+                password: [{
+                    required: true,
+                    message: '请输入密码',
+                    trigger: 'blur'
+                }],
+                checkPass: [{
+                        required: true,
+                        message: '请再次输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: validatePass2,
+                        trigger: 'blur'
+                    }
+                ]
             }
-          })
-        } else {
-          console.log('error submit!!');
-          return false;
         }
-      });
+    },
+    methods: {
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let opt = this.registerValidateForm;
+                    this.$http.post('/api/register', opt).then((response) => {
+                        // console.log(response)
+                        if (response.data.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '注册成功，请登录'
+                            })
+                            this.$router.push('/login')
+                        } else {
+                            this.$message({
+                                type: 'info',
+                                message: '此账户已存在'
+                            })
+                        }
+                    })
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        }
     }
-  }
 }
 </script>
 

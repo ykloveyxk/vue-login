@@ -44,66 +44,66 @@ import Register from '@/components/Register.vue'
 import * as types from '../store/types'
 import sha1 from 'sha1'
 export default {
-  name: 'login',
-  data() {
-    return {
-      dynamicValidateForm: {
-        domains: [{
-          value: ''
-        }],
-        email: '',
-        password: ''
-      },
-      activeName: this.$store.state.activeName
-    }
-  },
-  components: {
-    Register
-  },
-  methods: {
-    handleClick(tab, event) {
-      // console.log(tab, event);
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          let opt = this.dynamicValidateForm;
-          this.$http.post('/api/login', opt).then((response) => {
-            console.log(response)
-            if (response.data.info == false) {
-              this.$message({
-                type: 'info',
-                message: '账号不存在'
-              })
-            }
-            if (response.data.success) {
-              this.$message({
-                type: 'success',
-                message: '登录成功'
-              })
-              this.$store.commit(types.LOGIN, response.data.token);
-              let redirect = decodeURIComponent(this.$route.query.redirect || '/');
-              this.$router.push({
-                path: redirect
-              })
-              console.log(localStorage.token)
-            } else if (response.data.success == false) {
-              this.$message({
-                type: 'info',
-                message: '密码错误'
-              })
-            }
-          })
-        } else {
-          console.log('error submit!!');
-          return false;
+    name: 'login',
+    data() {
+        return {
+            dynamicValidateForm: {
+                domains: [{
+                    value: ''
+                }],
+                email: '',
+                password: ''
+            },
+            activeName: this.$store.state.activeName
         }
-      });
+    },
+    components: {
+        Register
+    },
+    methods: {
+        handleClick(tab, event) {
+            // console.log(tab, event);
+        },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let opt = this.dynamicValidateForm;
+                    this.$http.post('/api/login', opt).then((response) => {
+                        // console.log(response)
+                        if (response.data.info == false) {
+                            this.$message({
+                                type: 'info',
+                                message: '账号不存在'
+                            })
+                        }
+                        if (response.data.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '登录成功'
+                            })
+                            this.$store.commit(types.LOGIN, response.data.token);
+                            let redirect = decodeURIComponent(this.$route.query.redirect || '/');
+                            this.$router.push({
+                                path: redirect
+                            })
+                            // console.log(localStorage.token)
+                        } else if (response.data.success == false) {
+                            this.$message({
+                                type: 'info',
+                                message: '密码错误'
+                            })
+                        }
+                    })
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        }
     }
-  }
 }
 </script>
 

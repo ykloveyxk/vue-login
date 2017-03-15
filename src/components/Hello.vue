@@ -30,7 +30,7 @@ export default {
         getUser() {
             setTimeout(() => {
                 this.$http.get('/api/user').then((response) => {
-                    console.log(response)
+                    // console.log(response)
                     this.user = response.data
                 })
             }, 50)
@@ -52,11 +52,10 @@ export default {
         },
         del_user(id) {
             let _id = this.user[id]._id;
-            console.log(_id)
             this.$http.post('/api/del_user', {
                 id: _id
             }).then(response => {
-                console.log(response)
+                // console.log(response)
                 this.$message({
                     type: 'success',
                     message: '删除成功'
