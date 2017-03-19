@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Hello from '@/components/Hello'
 import store from '../store/index.js'
 
 Vue.use(Router)
@@ -52,8 +51,9 @@ const router = new Router({
 
 // 验证 token，存在才跳转
 router.beforeEach((to, from, next) => {
+	let token = localStorage.getItem('token')
 	if(to.meta.requireAuth) {
-		if(localStorage.token) {
+		if(token) {
 			next()
 		} else {
 			next({

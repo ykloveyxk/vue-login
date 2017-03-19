@@ -95,6 +95,7 @@ export default {
                                 message: '登录成功'
                             })
                             this.$store.dispatch('UserLogin', data.token)
+                            this.$store.dispatch('UserName', data.email)
                             let redirect = decodeURIComponent(this.$route.query.redirect || '/');
                             this.$router.push({
                                 path: redirect

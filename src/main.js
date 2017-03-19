@@ -9,7 +9,6 @@ import axios from './http'
 import store from './store/index.js'
 
 Vue.use(ElementUI)
-Vue.prototype.$http = axios
 
 /* eslint-disable no-new */
 new Vue({

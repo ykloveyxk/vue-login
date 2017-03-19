@@ -1,7 +1,6 @@
 <template scope='scope'>
 <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>网站用户有：</h2>
+    <h1>{{ msg }}: {{ username }}</h1>
 
     <!-- v-for在进行过度时，使用 transition-group 标签，使用后内层标签需要有独有的 key 值 -->
     <transition-group name="list-complete" tag="ul">
@@ -26,7 +25,8 @@ export default {
     data() {
         return {
             msg: 'Welcome to Vue-login',
-            user: ''
+            user: '',
+            username: ''
         }
     },
     mounted() {
@@ -36,6 +36,7 @@ export default {
         }) => {
             this.user = data
         })
+        this.username = localStorage.getItem('username')
     },
     methods: {
         get_User() {

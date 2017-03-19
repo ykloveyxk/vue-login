@@ -11,5 +11,9 @@ export default {
 	// 用户登出
 	UserLogout({ commit }) {
 		commit(types.LOGOUT)
+	},
+
+	UserName({ commit }, data) {
+		commit(types.USERNAME, data)
 	}
 }

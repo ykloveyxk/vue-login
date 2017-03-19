@@ -20,7 +20,7 @@ var userSchema = mongoose.Schema({
 var model = {
 	// 可以在此处扩展 model，例如：
 	// Article: mongoose.model('Article', articleSchema),
-	User: mongoose.model('Register', userSchema)
+	User: mongoose.model('User', userSchema)
 }
 
 module.exports = model

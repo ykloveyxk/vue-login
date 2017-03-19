@@ -83,7 +83,6 @@ const User = (req, res) => {
 }
 
 const delUser = (req, res) => {
-	console.log(req.body.id)
 	model.User.findOneAndRemove({ _id: req.body.id }, err => {
 		if(err) console.log(err)
 		console.log('删除用户成功')
