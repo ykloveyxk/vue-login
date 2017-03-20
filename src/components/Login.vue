@@ -37,7 +37,7 @@
 <script>
 import Register from '@/components/Register.vue'
 import * as types from '../store/types'
-import api from '../http'
+import api from '../axios'
 export default {
     name: 'login',
     data() {
@@ -83,6 +83,7 @@ export default {
                     api.UserLogin(opt).then(({
                         data
                     }) => {
+                        console.log(data)
                         if (!data.info) {
                             this.$message({
                                 type: 'info',
@@ -96,10 +97,11 @@ export default {
                             })
                             this.$store.dispatch('UserLogin', data.token)
                             this.$store.dispatch('UserName', data.email)
-                            let redirect = decodeURIComponent(this.$route.query.redirect || '/');
-                            this.$router.push({
-                                path: redirect
-                            })
+                            // let redirect = decodeURIComponent(this.$route.query.redirect || '/');
+                            // this.$router.push({
+                            //     path: redirect
+                            // })
+                            this.$router.push('/')
                         } else {
                             this.$message({
                                 type: 'info',

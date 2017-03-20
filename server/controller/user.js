@@ -8,7 +8,7 @@ const sha1 = require('sha1')
 const checkToken = require('../middleware/checkToken.js')
 
 const Register = (req, res) => {
-	let User_register = new model.User({
+	let userRegister = new model.User({
 		email: req.body.email,
 		password: sha1(req.body.password),
 		recheck: req.body.recheck,
@@ -16,21 +16,21 @@ const Register = (req, res) => {
 	})
 
 	// 将 objectid 转换为 用户创建时间
-	User_register.create_time = moment(objectIdToTimestamp(User_register._id))
+	userRegister.create_time = moment(objectIdToTimestamp(userRegister._id))
 		.format('YYYY-MM-DD HH:mm:ss');
 
-	// 查找已注册用户，用户名存在则不能注册
 	model.User.findOne({
-		email: (User_register.email)
+		email: (userRegister.email)
 			.toLowerCase()
 	}, (err, doc) => {
 		if(err) console.log(err)
+		// 用户名已存在，不能注册
 		if(doc) {
 			res.json({
 				success: false
 			})
 		} else {
-			User_register.save(err => {
+			userRegister.save(err => {
 				if(err) console.log(err)
 				console.log('register success')
 				res.json({
@@ -42,19 +42,19 @@ const Register = (req, res) => {
 }
 
 const Login = (req, res) => {
-	let User_login = new model.User({
+	let userLogin = new model.User({
 		email: req.body.email,
-		password: sha1(req.body.password)
+		password: sha1(req.body.password),
+		token: createToken(this.email)
 	})
-	console.log(User_login)
-	model.User.findOne({ email: User_login.email }, (err, doc) => {
+	model.User.findOne({ email: userLogin.email }, (err, doc) => {
 		if(err) console.log(err)
 		if(!doc) {
 			console.log("账号不存在");
 			res.json({
 				info: false
 			})
-		} else if(User_login.password === doc.password) {
+		} else if(userLogin.password === doc.password) {
 			console.log('登录成功')
 			var name = req.body.email;
 			res.json({
@@ -95,6 +95,6 @@ const delUser = (req, res) => {
 module.exports = (router) => {
 	router.post('/register', Register),
 		router.post('/login', Login),
-		router.get('/user', User),
-		router.post('/delUser', delUser)
+		router.get('/user', checkToken, User),
+		router.post('/delUser', checkToken, delUser)
 }

@@ -1,4 +1,4 @@
-import api from '../http'
+import api from '../axios'
 import Vue from 'vue'
 import router from '../router/index'
 import * as types from './types'
@@ -15,5 +15,8 @@ export default {
 
 	UserName({ commit }, data) {
 		commit(types.USERNAME, data)
+	},
+	showProgress({ commit }, number) {
+		commit('SHOW_PROGRESS', number)
 	}
 }

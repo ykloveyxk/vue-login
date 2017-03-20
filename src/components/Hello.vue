@@ -19,7 +19,7 @@
  * @author: weakgoldfish
  */
 import * as types from '../store/types'
-import api from '../http'
+import api from '../axios'
 export default {
     name: 'hello',
     data() {
@@ -30,12 +30,7 @@ export default {
         }
     },
     mounted() {
-        // 直接调用 this.get_User() 会导致第一次登录时产生setTimeout的延迟。
-        api.getUser().then(({
-            data
-        }) => {
-            this.user = data
-        })
+        this.get_User()
         this.username = localStorage.getItem('username')
     },
     methods: {
@@ -44,7 +39,14 @@ export default {
                 api.getUser().then(({
                     data
                 }) => {
-                    this.user = data
+                    if (data.code == 401) {
+                        console.log('token')
+                        this.$router.push('/login')
+                        this.$store.dispatch('UserLogout')
+                        console.log(localStorage.token)
+                    } else {
+                        this.user = data
+                    }
                 })
             }, 100)
         },
@@ -68,6 +70,7 @@ export default {
                 id: this.user[id]._id
             };
             api.delUser(opt).then(response => {
+                console.log(response)
                 this.$message({
                     type: 'success',
                     message: '删除成功'
