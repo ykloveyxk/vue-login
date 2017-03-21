@@ -3,6 +3,7 @@ import router from './router/index'
 import store from './store/index'
 import * as types from './store/types'
 
+//
 axios.default.timeout = 5000
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
@@ -17,7 +18,6 @@ instance.interceptors.request.use(config => {
 	}
 	return config
 }, err => {
-	// store.dispatch('showProgress',100)
 	return Promise.reject(err)
 })
 // axios拦截响应

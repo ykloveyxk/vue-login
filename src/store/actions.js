@@ -8,15 +8,11 @@ export default {
 		commit(types.LOGIN, data)
 	},
 
-	// 用户登出
 	UserLogout({ commit }) {
 		commit(types.LOGOUT)
 	},
 
 	UserName({ commit }, data) {
 		commit(types.USERNAME, data)
-	},
-	showProgress({ commit }, number) {
-		commit('SHOW_PROGRESS', number)
 	}
 }

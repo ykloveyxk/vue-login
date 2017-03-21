@@ -13,9 +13,6 @@ const mutations = {
 	[types.USERNAME]: (state, data) => {
 		localStorage.setItem('username', data)
 		state.username = data
-	},
-	[types.SHOW_PROGRESS](state, number) {
-		state.progress = number
 	}
 }
 export default mutations
