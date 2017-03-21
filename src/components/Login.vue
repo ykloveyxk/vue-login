@@ -20,7 +20,7 @@
                     >
                       <el-input type="password" v-model="dynamicValidateForm.password"></el-input>
                     </el-form-item>
-                    <el-button type="primary" @click="submitForm('dynamicValidateForm')">登陆</el-button>
+                    <el-button type="primary" @click="submitForm('dynamicValidateForm')">登录</el-button>
                     <el-button @click="resetForm('dynamicValidateForm')">重置</el-button>
               </el-form>
             </el-col>
@@ -47,7 +47,7 @@ export default {
                 password: ''
             },
             activeName: this.$store.state.activeName,
-
+            // 输入校验
             rules: {
                 email: [{
                         required: true,
@@ -73,9 +73,11 @@ export default {
     },
     methods: {
         handleClick(tab, event) {},
+        // 重置
         resetForm(formName) {
             this.$refs[formName].resetFields();
         },
+        // 登录
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
@@ -97,11 +99,10 @@ export default {
                             })
                             this.$store.dispatch('UserLogin', data.token)
                             this.$store.dispatch('UserName', data.email)
-                            // let redirect = decodeURIComponent(this.$route.query.redirect || '/');
-                            // this.$router.push({
-                            //     path: redirect
-                            // })
-                            this.$router.push('/')
+                            let redirect = decodeURIComponent(this.$route.query.redirect || '/');
+                            this.$router.push({
+                                path: redirect
+                            })
                         } else {
                             this.$message({
                                 type: 'info',

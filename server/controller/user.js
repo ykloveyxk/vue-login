@@ -7,6 +7,7 @@ const createToken = require('../middleware/createToken.js')
 const sha1 = require('sha1')
 const checkToken = require('../middleware/checkToken.js')
 
+// 注册
 const Register = (req, res) => {
 	let userRegister = new model.User({
 		email: req.body.email,
@@ -41,6 +42,7 @@ const Register = (req, res) => {
 	})
 }
 
+// 登录
 const Login = (req, res) => {
 	let userLogin = new model.User({
 		email: req.body.email,
@@ -75,6 +77,7 @@ const Login = (req, res) => {
 	})
 }
 
+// 所有用户打印
 const User = (req, res) => {
 	model.User.find({}, (err, doc) => {
 		if(err) console.log(err)
@@ -82,6 +85,7 @@ const User = (req, res) => {
 	})
 }
 
+// 删除用户
 const delUser = (req, res) => {
 	model.User.findOneAndRemove({ _id: req.body.id }, err => {
 		if(err) console.log(err)
