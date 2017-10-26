@@ -110,7 +110,7 @@ export default {
                             })
                             //  Register 设计为了 Login 的组件，所以成功跳转时刷新一次页面
                             this.$router.go(0)
-                            this.$router.push('/login')
+                            // this.$router.push('/login')
                         } else {
                             this.$message({
                                 type: 'info',
